@@ -37,15 +37,15 @@ const Hero: React.FC = () => {
 
             {/* Stats Bar (Desktop placement) */}
             <div className="hidden lg:grid grid-cols-3 gap-8 pt-8 border-t border-slate-200 w-full">
-              <div>
+              <div className="transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-lg rounded-xl p-4 -m-4 cursor-default">
                 <p className="text-2xl font-bold text-slate-900">500+</p>
                 <p className="text-sm text-slate-500 font-medium">Print jobs completed</p>
               </div>
-              <div>
+              <div className="transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-lg rounded-xl p-4 -m-4 cursor-default">
                 <p className="text-2xl font-bold text-slate-900">48–72 hrs</p>
                 <p className="text-sm text-slate-500 font-medium">Typical turnaround</p>
               </div>
-              <div>
+              <div className="transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-lg rounded-xl p-4 -m-4 cursor-default">
                 <p className="text-2xl font-bold text-slate-900">Lagos</p>
                 <p className="text-sm text-slate-500 font-medium">Fast local delivery</p>
               </div>

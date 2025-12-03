@@ -11,7 +11,10 @@
   "dependencies": {
     "lucide-react": "^0.555.0",
     "react": "^19.2.1",
-    "react-dom": "^19.2.1"
+    "react-dom": "^19.2.1",
+    "next": "^16.0.7",
+    "nodemailer": "^7.0.11",
+    "buffer": "^6.0.3"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

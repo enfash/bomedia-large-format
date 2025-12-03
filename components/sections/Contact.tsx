@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MessageCircle, Phone, Mail, Upload, CheckCircle2 } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { MessageCircle, Phone, Mail, Upload, CheckCircle2, FileCheck, AlertCircle, Loader2, X } from 'lucide-react';
 import Button from '../ui/Button';
 import { WHATSAPP_LINK, PHONE_DISPLAY, EMAIL_DISPLAY } from '../../constants';
 import { ContactFormData } from '../../types';
@@ -13,8 +13,12 @@ const Contact: React.FC = () => {
     message: '',
     file: null
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [agreeToUpdates, setAgreeToUpdates] = useState(true);
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+  
+  // Ref to clear file input after submission
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -27,28 +31,66 @@ const Contact: React.FC = () => {
     }
   };
 
+  const clearFile = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setFormData(prev => ({ ...prev, file: null }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    console.log("Form Submitted:", formData);
-    
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    setFormData({
-      name: '',
-      phone: '',
-      email: '',
-      jobType: 'Flex Banner',
-      message: '',
-      file: null
-    });
+    setStatus('sending');
+    setErrorMessage('');
 
-    // Reset success message after 5 seconds
-    setTimeout(() => setIsSuccess(false), 5000);
+    const data = new FormData();
+    data.append('name', formData.name);
+    data.append('phone', formData.phone);
+    data.append('email', formData.email);
+    data.append('jobType', formData.jobType);
+    data.append('message', formData.message);
+    data.append('agreeToUpdates', agreeToUpdates.toString());
+    
+    if (formData.file) {
+      data.append('file', formData.file);
+    }
+
+    try {
+      const response = await fetch('/api/email', {
+        method: 'POST',
+        body: data,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      setStatus('success');
+      
+      // Reset form
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        jobType: 'Flex Banner',
+        message: '',
+        file: null
+      });
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+
+      // Auto-dismiss success message after 10 seconds
+      setTimeout(() => {
+        setStatus('idle');
+      }, 10000);
+
+    } catch (error) {
+      console.error('Submission error:', error);
+      setStatus('error');
+      setErrorMessage('Could not send message. Please try again or contact us on WhatsApp.');
+    }
   };
 
   return (
@@ -94,23 +136,46 @@ const Contact: React.FC = () => {
 
           {/* Right Side: Form */}
           <div className="bg-slate-50 rounded-3xl p-8 lg:p-10 border border-slate-100 shadow-sm relative overflow-hidden">
-            {isSuccess ? (
-              <div className="absolute inset-0 bg-slate-50 flex flex-col items-center justify-center text-center p-8 z-10 animate-fade-in">
+            
+            {/* Success Overlay */}
+            {status === 'success' && (
+              <div className="absolute inset-0 bg-slate-50 flex flex-col items-center justify-center text-center p-8 z-20 animate-fade-in">
                 <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
                   <CheckCircle2 size={32} />
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">Request Received!</h3>
-                <p className="text-slate-600">
-                  Thanks! We’ve received your request. We’ll get back to you shortly.
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">Request Sent!</h3>
+                <p className="text-slate-600 mb-6">
+                  We have received your details and artwork. Our team will review everything and get back to you with a quote shortly.
                 </p>
-                <button 
-                  onClick={() => setIsSuccess(false)}
-                  className="mt-8 text-primary-600 font-medium hover:text-primary-700"
+                <Button 
+                  onClick={() => setStatus('idle')}
+                  variant="outline"
                 >
                   Send another request
-                </button>
+                </Button>
               </div>
-            ) : null}
+            )}
+
+            {/* Error Overlay */}
+            {status === 'error' && (
+              <div className="absolute inset-0 bg-white/95 flex flex-col items-center justify-center text-center p-8 z-20 animate-fade-in">
+                <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-6">
+                  <AlertCircle size={32} />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Something went wrong</h3>
+                <p className="text-slate-600 mb-6 max-w-xs mx-auto">
+                  {errorMessage || 'Unable to send your request at this time.'}
+                </p>
+                <div className="flex gap-3">
+                  <Button onClick={() => setStatus('idle')} variant="secondary">
+                    Try Again
+                  </Button>
+                  <Button href={WHATSAPP_LINK} target="_blank" variant="primary">
+                    Use WhatsApp
+                  </Button>
+                </div>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -123,7 +188,7 @@ const Contact: React.FC = () => {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
                     placeholder="Your name"
                   />
                 </div>
@@ -136,7 +201,7 @@ const Contact: React.FC = () => {
                     required
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
                     placeholder="080..."
                   />
                 </div>
@@ -150,7 +215,7 @@ const Contact: React.FC = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
                   placeholder="john@example.com"
                 />
               </div>
@@ -163,7 +228,7 @@ const Contact: React.FC = () => {
                   required
                   value={formData.jobType}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
                 >
                   <option value="Flex Banner">Flex Banner</option>
                   <option value="Self-Adhesive Vinyl (SAV)">Self-Adhesive Vinyl (SAV)</option>
@@ -181,27 +246,70 @@ const Contact: React.FC = () => {
                   rows={4}
                   value={formData.message}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all resize-none"
                   placeholder="Size, quantity, deadline, any notes..."
                 />
               </div>
 
               <div className="space-y-2">
                 <label htmlFor="file" className="text-sm font-medium text-slate-700">Upload artwork (Optional)</label>
-                <div className="relative">
+                <div className="relative group">
                   <input
                     type="file"
                     id="file"
                     name="file"
+                    ref={fileInputRef}
                     onChange={handleFileChange}
                     className="hidden"
                   />
                   <label 
                     htmlFor="file" 
-                    className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-primary-500 hover:bg-slate-50 transition-all text-slate-500"
+                    className={`flex items-center justify-center w-full px-4 py-4 border-2 border-dashed rounded-xl cursor-pointer bg-white transition-all ${
+                      formData.file 
+                        ? 'border-primary-500 bg-primary-50/50 text-primary-700' 
+                        : 'border-slate-300 text-slate-500 hover:border-primary-400 hover:bg-slate-50'
+                    }`}
                   >
-                    <Upload className="mr-2 h-4 w-4" />
-                    <span className="truncate">{formData.file ? formData.file.name : 'Choose a file'}</span>
+                    {formData.file ? (
+                      <div className="flex items-center w-full justify-between">
+                        <div className="flex items-center overflow-hidden">
+                          <FileCheck className="mr-2 h-5 w-5 flex-shrink-0" />
+                          <span className="truncate font-medium">{formData.file.name}</span>
+                          <span className="ml-2 text-xs opacity-70 flex-shrink-0">
+                            ({(formData.file.size / 1024 / 1024).toFixed(2)} MB)
+                          </span>
+                        </div>
+                        <button 
+                          onClick={clearFile}
+                          className="p-1 hover:bg-white rounded-full transition-colors ml-2"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <Upload className="mr-2 h-5 w-5" />
+                        <span className="truncate">Choose a file to upload</span>
+                      </>
+                    )}
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 pt-2">
+                <div className="flex h-6 items-center">
+                  <input
+                    id="agreeToUpdates"
+                    name="agreeToUpdates"
+                    type="checkbox"
+                    checked={agreeToUpdates}
+                    onChange={(e) => setAgreeToUpdates(e.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-600 cursor-pointer"
+                  />
+                </div>
+                <div className="text-sm leading-6">
+                  <label htmlFor="agreeToUpdates" className="text-slate-600 cursor-pointer select-none">
+                    By submitting, you agree we send you updates about your order.
                   </label>
                 </div>
               </div>
@@ -209,10 +317,17 @@ const Contact: React.FC = () => {
               <Button 
                 type="submit" 
                 variant="primary" 
-                className="w-full"
-                disabled={isSubmitting}
+                className="w-full shadow-lg hover:shadow-xl translate-y-0 hover:-translate-y-0.5"
+                disabled={status === 'sending'}
               >
-                {isSubmitting ? 'Sending...' : 'Get Quote'}
+                {status === 'sending' ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Sending...
+                  </div>
+                ) : (
+                  'Send Request'
+                )}
               </Button>
             </form>
           </div>

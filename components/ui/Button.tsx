@@ -4,6 +4,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   href?: string;
+  target?: string;
   className?: string;
 }
 
@@ -12,6 +13,7 @@ const Button: React.FC<ButtonProps> = ({
   variant = 'primary', 
   size = 'md', 
   href, 
+  target,
   className = '', 
   ...props 
 }) => {
@@ -34,7 +36,12 @@ const Button: React.FC<ButtonProps> = ({
 
   if (href) {
     return (
-      <a href={href} className={classes}>
+      <a 
+        href={href} 
+        className={classes}
+        target={target}
+        rel={target === '_blank' ? "noopener noreferrer" : undefined}
+      >
         {children}
       </a>
     );

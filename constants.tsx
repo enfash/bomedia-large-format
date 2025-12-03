@@ -10,7 +10,7 @@ import { NavItem, ServiceItem, TimelineStep, GalleryItem, FAQItem } from './type
 
 export const WHATSAPP_LINK = "https://wa.me/2348022247567?text=Hi%20BOMedia%2C%20I%20need%20a%20quote%20for%20large%20format%20printing.";
 export const PHONE_DISPLAY = "+234 802 224 7567";
-export const EMAIL_DISPLAY = "info@bomedia.ng";
+export const EMAIL_DISPLAY = "bomedia03@gmail.com";
 
 export const NAV_LINKS: NavItem[] = [
   { label: 'What we print', href: '#what-we-print' },

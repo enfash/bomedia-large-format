@@ -1,24 +1,47 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SERVICES } from '../../constants';
 
 const Services: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section id="what-we-print" className="py-16 lg:py-24 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl mb-4">
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl mb-4 inline-block relative group cursor-default">
             What we print
+            <span className="absolute -bottom-1 left-0 w-0 h-1 bg-primary-500 transition-all duration-300 group-hover:w-full rounded-full"></span>
           </h2>
           <p className="text-lg text-slate-600">
             Focused large-format printing for brands, shops and events in Lagos.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {SERVICES.map((service) => (
+        <div ref={containerRef} className="grid md:grid-cols-3 gap-8">
+          {SERVICES.map((service, index) => (
             <div 
               key={service.id} 
-              className="group relative p-8 bg-slate-50 rounded-2xl border border-slate-100 hover:border-primary-200 hover:shadow-lg transition-all duration-300"
+              className={`group relative p-8 bg-slate-50 rounded-2xl border border-slate-100 hover:border-primary-200 hover:shadow-lg transition-all duration-300 ${isVisible ? 'animate-bounce-in opacity-0' : 'opacity-0'}`}
+              style={{ animationDelay: `${index * 150}ms` }}
             >
               <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary-600 mb-6 group-hover:bg-primary-600 group-hover:text-white transition-colors duration-300">
                 <service.icon size={24} />

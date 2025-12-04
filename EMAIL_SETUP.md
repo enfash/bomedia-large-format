@@ -8,20 +8,20 @@
    ```
 
 2. **Edit `.env.local` and fill in your credentials:**
-   - `EMAIL_USER`: `info@bomedia.ng`
+   - `EMAIL_USER`: `mail.domainname.com`
    - `EMAIL_PASS`: Your email account password
-   - `EMAIL_RECIPIENT`: `bomedia03@gmail.com` (forwarding destination)
+   - `EMAIL_RECIPIENT`: `yourgmail@gmail.com` (forwarding destination)
 
 ## Configuration Details
 
 ### Domain SMTP Settings (BOMedia)
 ```env
-EMAIL_HOST=mail.bomedia.ng
+EMAIL_HOST=mail.domainname.com
 EMAIL_PORT=465
 EMAIL_SECURE=true
-EMAIL_USER=info@bomedia.ng
+EMAIL_USER=hostmail
 EMAIL_PASS=your-password-here
-EMAIL_RECIPIENT=bomedia03@gmail.com
+EMAIL_RECIPIENT=yourgmail@gmail.com
 PORT=3001
 ```
 

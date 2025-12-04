@@ -1,10 +1,10 @@
-import { 
-  Printer, 
-  Layers, 
-  Scan, 
-  MessageSquare, 
-  FileCheck, 
-  Truck 
+import {
+  Printer,
+  Layers,
+  Scan,
+  MessageSquare,
+  FileCheck,
+  Truck
 } from 'lucide-react';
 import { NavItem, ServiceItem, TimelineStep, GalleryItem, FAQItem } from './types';
 
@@ -65,13 +65,19 @@ export const TIMELINE_STEPS: TimelineStep[] = [
   },
 ];
 
+export const HERO_IMAGES: string[] = [
+  '/images/hero/1.png',
+  '/images/hero/2.png',
+  '/images/hero/3.png',
+];
+
 export const GALLERY_ITEMS: GalleryItem[] = [
-  { id: 1, imageUrl: 'https://picsum.photos/600/400?random=1', caption: 'Shopfront flex banner' },
-  { id: 2, imageUrl: 'https://picsum.photos/600/400?random=2', caption: 'Window branding' },
-  { id: 3, imageUrl: 'https://picsum.photos/600/400?random=3', caption: 'Event back-drop banner' },
-  { id: 4, imageUrl: 'https://picsum.photos/600/400?random=4', caption: 'Clear sticker details' },
-  { id: 5, imageUrl: 'https://picsum.photos/600/400?random=5', caption: 'SAV Wall wrap' },
-  { id: 6, imageUrl: 'https://picsum.photos/600/400?random=6', caption: 'Roll-up banner stand' },
+  { id: 1, imageUrl: '/images/gallery/1.png', caption: 'Shopfront flex banner' },
+  { id: 2, imageUrl: '/images/gallery/2.png', caption: 'Window branding' },
+  { id: 3, imageUrl: '/images/gallery/3.png', caption: 'Event back-drop banner' },
+  { id: 4, imageUrl: '/images/gallery/4.png', caption: 'Clear sticker details' },
+  { id: 5, imageUrl: '/images/gallery/5.png', caption: 'SAV Wall wrap' },
+  { id: 6, imageUrl: '/images/gallery/6.png', caption: 'Roll-up banner stand' },
 ];
 
 export const FAQS: FAQItem[] = [

@@ -1,108 +1,97 @@
-import React from 'react';
-import { ArrowRight, UploadCloud } from 'lucide-react';
-import Button from '../ui/Button';
-import { WHATSAPP_LINK } from '../../constants';
+import React, { useState, useEffect } from 'react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { WHATSAPP_LINK, HERO_IMAGES } from '../../constants';
 
-const Hero: React.FC = () => {
+export default function Hero() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 5000); // Change image every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <section id="hero" className="relative pt-32 pb-16 lg:pt-48 lg:pb-24 overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-primary-100/50 rounded-full blur-3xl opacity-60 -z-10 pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[500px] h-[500px] bg-blue-50/50 rounded-full blur-3xl opacity-60 -z-10 pointer-events-none"></div>
+    <div className="relative bg-slate-50 pt-32 pb-20 lg:pt-32 lg:pb-32 overflow-hidden">
+      <div className="container mx-auto px-6">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          
-          {/* Left Column: Text */}
-          <div className="flex flex-col items-start text-left space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-900 tracking-tight leading-[1.1]">
-                Large-format printing that puts your brand on the street — <span className="text-primary-600">fast</span>.
-              </h1>
-              <p className="text-lg lg:text-xl text-slate-600 max-w-lg leading-relaxed">
-                We specialise in flex banners, self-adhesive vinyl, window graphics and clear stickers for Lagos businesses.
-              </p>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              <Button href={WHATSAPP_LINK} target="_blank" variant="primary" size="lg" className="w-full sm:w-auto">
-                Get a quick quote on WhatsApp
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button href="#contact" variant="outline" size="lg" className="w-full sm:w-auto">
-                <UploadCloud className="mr-2 h-4 w-4" />
-                Upload artwork
-              </Button>
+          {/* Text Content */}
+          <div className="flex-1 text-center lg:text-left z-10">
+            <div className="inline-flex items-center gap-2 bg-primary-50 border border-primary-100 rounded-full px-4 py-1.5 mb-8">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+              </span>
+              <span className="text-sm font-medium text-primary-800">Open for orders in Lagos</span>
             </div>
 
-            {/* Stats Bar (Desktop placement) */}
-            <div className="hidden lg:grid grid-cols-3 gap-8 pt-8 border-t border-slate-200 w-full">
-              <div className="transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-lg rounded-xl p-4 -m-4 cursor-default">
-                <p className="text-2xl font-bold text-slate-900">500+</p>
-                <p className="text-sm text-slate-500 font-medium">Print jobs completed</p>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-6">
+              Premium Large Format <br className="hidden lg:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-700 to-primary-500">
+                Printing Solutions
+              </span>
+            </h1>
+
+            <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              From vibrant flex banners to precision window graphics, we deliver professional quality prints that make your brand stand out. Fast turnaround, competitive pricing.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <a
+                href={WHATSAPP_LINK}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary-700 hover:bg-primary-800 text-white px-8 py-4 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-primary-700/20"
+              >
+                Get a Quote
+                <ArrowRight className="w-5 h-5" />
+              </a>
+              <a
+                href="#gallery"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white border border-slate-200 hover:border-primary-700 text-slate-700 hover:text-primary-700 px-8 py-4 rounded-full font-semibold transition-all"
+              >
+                View Our Work
+              </a>
+            </div>
+
+            <div className="mt-10 flex items-center justify-center lg:justify-start gap-6 text-sm text-slate-500">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-primary-500" />
+                <span>48hr Delivery</span>
               </div>
-              <div className="transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-lg rounded-xl p-4 -m-4 cursor-default">
-                <p className="text-2xl font-bold text-slate-900">48–72 hrs</p>
-                <p className="text-sm text-slate-500 font-medium">Typical turnaround</p>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-primary-500" />
+                <span>High Resolution</span>
               </div>
-              <div className="transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-lg rounded-xl p-4 -m-4 cursor-default">
-                <p className="text-2xl font-bold text-slate-900">Lagos</p>
-                <p className="text-sm text-slate-500 font-medium">Fast local delivery</p>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-primary-500" />
+                <span>Free Consultation</span>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Visual */}
-          <div className="relative">
-             {/* "Pedestal" Effect Container */}
-            <div className="relative z-10 mx-auto max-w-md lg:max-w-full">
-              <div className="relative aspect-[4/5] md:aspect-square lg:aspect-[4/5] rounded-3xl overflow-hidden bg-white shadow-2xl ring-1 ring-slate-900/5 transform transition-transform hover:scale-[1.01] duration-500">
-                {/* Product Image Placeholder */}
-                <img 
-                  src="https://picsum.photos/800/1000?random=hero" 
-                  alt="Large format print example" 
-                  className="w-full h-full object-cover"
+          {/* Hero Image Slideshow */}
+          <div className="flex-1 w-full max-w-lg lg:max-w-none">
+            <div className="relative aspect-[4/5] md:aspect-square lg:aspect-[4/5] rounded-3xl overflow-hidden bg-white shadow-2xl ring-1 ring-slate-900/5 transform transition-transform hover:scale-[1.01] duration-500">
+
+              {HERO_IMAGES.map((image, index) => (
+                <img
+                  key={image}
+                  src={image}
+                  alt={`Large format print example ${index + 1}`}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+                    }`}
                 />
-                
-                {/* Overlay Label */}
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-white/50">
-                    <p className="text-xs font-bold tracking-wider text-primary-700 uppercase mb-1">
-                      Featured Products
-                    </p>
-                    <p className="text-sm font-medium text-slate-900">
-                      Flex Banners • SAV • Window Graphics
-                    </p>
-                  </div>
-                </div>
-              </div>
+              ))}
 
-              {/* Decorative Elements behind card */}
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-              <div className="absolute -bottom-8 -left-4 w-32 h-32 bg-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+              {/* Overlay Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent pointer-events-none"></div>
             </div>
           </div>
-
-           {/* Stats Bar (Mobile placement) */}
-           <div className="grid grid-cols-2 md:grid-cols-3 gap-y-6 gap-x-4 lg:hidden w-full pt-4 border-t border-slate-200">
-              <div className="col-span-1">
-                <p className="text-2xl font-bold text-slate-900">500+</p>
-                <p className="text-sm text-slate-500 font-medium">Print jobs completed</p>
-              </div>
-              <div className="col-span-1">
-                <p className="text-2xl font-bold text-slate-900">48–72 hrs</p>
-                <p className="text-sm text-slate-500 font-medium">Typical turnaround</p>
-              </div>
-              <div className="col-span-2 md:col-span-1">
-                <p className="text-2xl font-bold text-slate-900">Lagos</p>
-                <p className="text-sm text-slate-500 font-medium">Fast local delivery</p>
-              </div>
-            </div>
 
         </div>
       </div>
-    </section>
+    </div>
   );
-};
-
-export default Hero;
+}

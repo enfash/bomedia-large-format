@@ -16,41 +16,42 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || isMobileMenuOpen 
-          ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-100 py-3' 
-          : 'bg-transparent py-5'
-      }`}
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isMobileMenuOpen
+        ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-100 py-3'
+        : 'bg-transparent py-5'
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <a href="#" className="flex items-center gap-2 z-50">
-            <span className="text-2xl font-bold tracking-tight text-slate-900">
-              BO<span className="text-primary-600">Media</span>
-            </span>
+            <img
+              src="/bomedia-logo.svg"
+              alt="BOMedia"
+              className="h-12 w-auto"
+            />
           </a>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
             {NAV_LINKS.map((link) => (
-              <a 
+              <a
                 key={link.label}
-                href={link.href} 
+                href={link.href}
                 className="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors"
               >
                 {link.label}
               </a>
             ))}
-            <Button variant="outline" size="sm" href={WHATSAPP_LINK} target="_blank" className="gap-2">
+            <Button variant="outline" size="sm" href={WHATSAPP_LINK} target="_blank" className="gap-2 !border-green-600 !text-green-700 hover:!bg-green-50">
               <MessageCircle size={16} />
               WhatsApp Quote
             </Button>
           </nav>
 
           {/* Mobile Menu Button */}
-          <button 
+          <button
             className="md:hidden z-50 p-2 text-slate-600 hover:text-slate-900"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
@@ -61,14 +62,13 @@ const Header: React.FC = () => {
       </div>
 
       {/* Mobile Menu Overlay */}
-      <div 
-        className={`fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out md:hidden flex flex-col pt-24 px-6 ${
-          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+      <div
+        className={`fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out md:hidden flex flex-col pt-24 px-6 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
       >
         <div className="flex flex-col gap-6 text-lg font-medium">
           {NAV_LINKS.map((link) => (
-            <a 
+            <a
               key={link.label}
               href={link.href}
               className="text-slate-800 hover:text-primary-600 border-b border-slate-100 pb-4"
@@ -77,7 +77,7 @@ const Header: React.FC = () => {
               {link.label}
             </a>
           ))}
-          <Button href={WHATSAPP_LINK} target="_blank" variant="primary" className="mt-4 gap-2 w-full">
+          <Button href={WHATSAPP_LINK} target="_blank" variant="primary" className="mt-4 gap-2 w-full !bg-green-600 hover:!bg-green-700">
             <MessageCircle size={18} />
             WhatsApp Quote
           </Button>

@@ -25,7 +25,7 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2 z-50">
+          <a href="/" className="flex items-center gap-2 z-50">
             <img
               src="/bomedia-logo.svg"
               alt="BOMedia"
@@ -66,7 +66,7 @@ const Header: React.FC = () => {
         className={`fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out md:hidden flex flex-col pt-24 px-6 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
       >
-        <div className="flex flex-col gap-6 text-lg font-medium">
+        <div className="flex flex-col gap-6 text-lg font-medium bg-white bg-opacity-80">
           {NAV_LINKS.map((link) => (
             <a
               key={link.label}

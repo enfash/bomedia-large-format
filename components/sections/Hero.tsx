@@ -1,18 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
-import { WHATSAPP_LINK, HERO_IMAGES } from '../../constants';
+import { WHATSAPP_LINK } from '../../constants';
 
 export default function Hero() {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
-    }, 5000); // Change image every 5 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="relative bg-slate-50 pt-32 pb-20 lg:pt-32 lg:pb-32 overflow-hidden">
       <div className="container mx-auto px-6">
@@ -29,14 +19,14 @@ export default function Hero() {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-6">
-              Premium Large Format <br className="hidden lg:block" />
+              LARGE-FORMAT PRINTING <br className="hidden lg:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-700 to-primary-500">
-                Printing Solutions
+                FOR LAGOS BUSINESSES
               </span>
             </h1>
 
             <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              From vibrant flex banners to precision window graphics, we deliver professional quality prints that make your brand stand out. Fast turnaround, competitive pricing.
+              Flex banners, self-adhesive vinyl (SAV), window graphics, and wall branding. Professional quality prints delivered fast across Lagos.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
@@ -48,7 +38,7 @@ export default function Hero() {
                 <ArrowRight className="w-5 h-5" />
               </a>
               <a
-                href="#gallery"
+                href="/#gallery"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white border border-slate-200 hover:border-primary-700 text-slate-700 hover:text-primary-700 px-8 py-4 rounded-full font-semibold transition-all"
               >
                 View Our Work
@@ -58,7 +48,7 @@ export default function Hero() {
             <div className="mt-10 flex items-center justify-center lg:justify-start gap-6 text-sm text-slate-500">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-primary-500" />
-                <span>48hr Delivery</span>
+                <span>4-6hr Delivery</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-primary-500" />
@@ -66,25 +56,19 @@ export default function Hero() {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-primary-500" />
-                <span>Free Consultation</span>
+                <span>Lagos-Wide Delivery</span>
               </div>
             </div>
           </div>
 
-          {/* Hero Image Slideshow */}
+          {/* Hero Image - Single Static */}
           <div className="flex-1 w-full max-w-lg lg:max-w-none">
-            <div className="relative aspect-[4/5] md:aspect-square lg:aspect-[4/5] rounded-3xl overflow-hidden bg-white shadow-2xl ring-1 ring-slate-900/5 transform transition-transform hover:scale-[1.01] duration-500">
-
-              {HERO_IMAGES.map((image, index) => (
-                <img
-                  key={image}
-                  src={image}
-                  alt={`Large format print example ${index + 1}`}
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-                    }`}
-                />
-              ))}
-
+            <div className="relative aspect-square lg:aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="/images/hero/1.png"
+                alt="BOMedia large format printing samples - flex banners, SAV, window graphics"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
               {/* Overlay Gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent pointer-events-none"></div>
             </div>

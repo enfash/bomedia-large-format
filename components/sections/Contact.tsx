@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { MessageCircle, Phone, Mail, Upload, CheckCircle2, FileCheck, AlertCircle, Loader2, X } from 'lucide-react';
+import { Loader2, Upload, X, MessageCircle, CheckCircle, AlertCircle, Phone, Mail, FileCheck } from 'lucide-react';
 import Button from '../ui/Button';
 import { WHATSAPP_LINK, PHONE_DISPLAY, EMAIL_DISPLAY } from '../../constants';
+import TermsModal from '../modals/TermsModal';
 import { ContactFormData } from '../../types';
 
 const Contact: React.FC = () => {
@@ -13,10 +14,11 @@ const Contact: React.FC = () => {
     message: '',
     file: null
   });
-  const [agreeToUpdates, setAgreeToUpdates] = useState(true);
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
-  
+  const [agreeToTerms, setAgreeToTerms] = useState(true); // Prechecked
+  const [showTermsModal, setShowTermsModal] = useState(false);
+
   // Ref to clear file input after submission
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -41,55 +43,56 @@ const Contact: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!agreeToTerms) {
+      setErrorMessage('Please agree to the Terms of Service');
+      return;
+    }
+
     setStatus('sending');
     setErrorMessage('');
 
-    const data = new FormData();
-    data.append('name', formData.name);
-    data.append('phone', formData.phone);
-    data.append('email', formData.email);
-    data.append('jobType', formData.jobType);
-    data.append('message', formData.message);
-    data.append('agreeToUpdates', agreeToUpdates.toString());
-    
-    if (formData.file) {
-      data.append('file', formData.file);
-    }
-
     try {
-      const response = await fetch('/api/email', {
+      const formspreeData = new FormData();
+
+      // Form fields
+      formspreeData.append('name', formData.name);
+      formspreeData.append('phone', formData.phone);
+      formspreeData.append('email', formData.email);
+      formspreeData.append('jobType', formData.jobType);
+      formspreeData.append('message', formData.message);
+
+      // File attachment (up to 50MB supported)
+      if (formData.file) {
+        formspreeData.append('file', formData.file);
+      }
+
+      const response = await fetch('https://formspree.io/f/mzznvaev', {
         method: 'POST',
-        body: data,
+        body: formspreeData,
+        headers: {
+          'Accept': 'application/json'
+        }
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        setStatus('success');
+        // Reset form
+        setFormData({ name: '', phone: '', email: '', jobType: 'Flex Banner', message: '', file: null });
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+
+        // Reset after 5 seconds
+        setTimeout(() => setStatus('idle'), 5000);
+      } else {
         throw new Error('Failed to send message');
       }
-
-      setStatus('success');
-      
-      // Reset form
-      setFormData({
-        name: '',
-        phone: '',
-        email: '',
-        jobType: 'Flex Banner',
-        message: '',
-        file: null
-      });
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-
-      // Auto-dismiss success message after 10 seconds
-      setTimeout(() => {
-        setStatus('idle');
-      }, 10000);
-
     } catch (error) {
       console.error('Submission error:', error);
       setStatus('error');
-      setErrorMessage('Could not send message. Please try again or contact us on WhatsApp.');
+      setErrorMessage('Failed to send message. Please try WhatsApp instead.');
+      setTimeout(() => setStatus('idle'), 5000);
     }
   };
 
@@ -97,7 +100,7 @@ const Contact: React.FC = () => {
     <section id="contact" className="py-16 lg:py-24 bg-white scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16">
-          
+
           {/* Left Side: Info */}
           <div>
             <div className="mb-8">
@@ -110,11 +113,14 @@ const Contact: React.FC = () => {
             </div>
 
             <div className="space-y-6">
-              <Button href={WHATSAPP_LINK} target="_blank" size="lg" className="w-full sm:w-auto gap-2">
-                <MessageCircle size={20} />
-                WhatsApp BOMedia
-              </Button>
-              
+              <div>
+                <Button href={WHATSAPP_LINK} target="_blank" size="lg" className="w-full sm:w-auto gap-2 !bg-green-600 hover:!bg-green-700">
+                  <MessageCircle size={20} />
+                  WhatsApp BOMedia
+                </Button>
+                <p className="text-xs text-slate-500 mt-2 text-center sm:text-left">Available during business hours (9am–6pm, Mon–Sat)</p>
+              </div>
+
               <div className="pt-6 border-t border-slate-100 space-y-4">
                 <div className="flex items-center gap-4 text-slate-700">
                   <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-primary-600">
@@ -136,18 +142,18 @@ const Contact: React.FC = () => {
 
           {/* Right Side: Form */}
           <div className="bg-slate-50 rounded-3xl p-8 lg:p-10 border border-slate-100 shadow-sm relative overflow-hidden">
-            
+
             {/* Success Overlay */}
             {status === 'success' && (
               <div className="absolute inset-0 bg-slate-50 flex flex-col items-center justify-center text-center p-8 z-20 animate-fade-in">
                 <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
-                  <CheckCircle2 size={32} />
+                  <CheckCircle size={32} />
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">Request Sent!</h3>
                 <p className="text-slate-600 mb-6">
                   We have received your details and artwork. Our team will review everything and get back to you with a quote shortly.
                 </p>
-                <Button 
+                <Button
                   onClick={() => setStatus('idle')}
                   variant="outline"
                 >
@@ -170,7 +176,7 @@ const Contact: React.FC = () => {
                   <Button onClick={() => setStatus('idle')} variant="secondary">
                     Try Again
                   </Button>
-                  <Button href={WHATSAPP_LINK} target="_blank" variant="primary">
+                  <Button href={WHATSAPP_LINK} target="_blank" variant="primary" className="!bg-green-600 hover:!bg-green-700">
                     Use WhatsApp
                   </Button>
                 </div>
@@ -262,13 +268,12 @@ const Contact: React.FC = () => {
                     onChange={handleFileChange}
                     className="hidden"
                   />
-                  <label 
-                    htmlFor="file" 
-                    className={`flex items-center justify-center w-full px-4 py-4 border-2 border-dashed rounded-xl cursor-pointer bg-white transition-all ${
-                      formData.file 
-                        ? 'border-primary-500 bg-primary-50/50 text-primary-700' 
-                        : 'border-slate-300 text-slate-500 hover:border-primary-400 hover:bg-slate-50'
-                    }`}
+                  <label
+                    htmlFor="file"
+                    className={`flex items-center justify-center w-full px-4 py-4 border-2 border-dashed rounded-xl cursor-pointer bg-white transition-all ${formData.file
+                      ? 'border-primary-500 bg-primary-50/50 text-primary-700'
+                      : 'border-slate-300 text-slate-500 hover:border-primary-400 hover:bg-slate-50'
+                      }`}
                   >
                     {formData.file ? (
                       <div className="flex items-center w-full justify-between">
@@ -279,7 +284,7 @@ const Contact: React.FC = () => {
                             ({(formData.file.size / 1024 / 1024).toFixed(2)} MB)
                           </span>
                         </div>
-                        <button 
+                        <button
                           onClick={clearFile}
                           className="p-1 hover:bg-white rounded-full transition-colors ml-2"
                         >
@@ -296,27 +301,36 @@ const Contact: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 pt-2">
+              {/* Terms Acknowledgment - Single prechecked checkbox */}
+              <div className="flex items-start gap-3 pt-4 pb-2 border-t border-slate-200">
                 <div className="flex h-6 items-center">
                   <input
-                    id="agreeToUpdates"
-                    name="agreeToUpdates"
+                    id="agreeToTerms"
+                    name="agreeToTerms"
                     type="checkbox"
-                    checked={agreeToUpdates}
-                    onChange={(e) => setAgreeToUpdates(e.target.checked)}
+                    checked={agreeToTerms}
+                    onChange={(e) => setAgreeToTerms(e.target.checked)}
+                    required
                     className="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-600 cursor-pointer"
                   />
                 </div>
                 <div className="text-sm leading-6">
-                  <label htmlFor="agreeToUpdates" className="text-slate-600 cursor-pointer select-none">
-                    By submitting, you agree we send you updates about your order.
+                  <label htmlFor="agreeToTerms" className="text-slate-600 cursor-pointer select-none">
+                    By submitting artwork, you agree to BOMedia's{' '}
+                    <button
+                      type="button"
+                      onClick={() => setShowTermsModal(true)}
+                      className="text-primary-700 hover:text-primary-800 underline font-medium"
+                    >
+                      Terms of Service
+                    </button>.
                   </label>
                 </div>
               </div>
 
-              <Button 
-                type="submit" 
-                variant="primary" 
+              <Button
+                type="submit"
+                variant="primary"
                 className="w-full shadow-lg hover:shadow-xl translate-y-0 hover:-translate-y-0.5"
                 disabled={status === 'sending'}
               >
@@ -333,6 +347,9 @@ const Contact: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Terms Modal */}
+      <TermsModal isOpen={showTermsModal} onClose={() => setShowTermsModal(false)} />
     </section>
   );
 };

@@ -18,15 +18,15 @@ export default function Hero() {
               <span className="text-sm font-medium text-primary-800">Open for orders in Lagos</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-none tracking-tighter mb-6">
               LARGE-FORMAT PRINTING <br className="hidden lg:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-700 to-primary-500">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-800 to-primary-600">
                 FOR LAGOS BUSINESSES
               </span>
             </h1>
 
             <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Flex banners, self-adhesive vinyl (SAV), window graphics, and wall branding. Professional quality prints delivered fast across Lagos.
+              <strong>Broad Options Media (BOMedia)</strong> is your plug for sharp large-format prints in Lagos. We do Flex Banners, SAV (Stickers), Window Graphics, and Branding. Fast delivery to Lekki, Ikeja, and everywhere in Lagos.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">

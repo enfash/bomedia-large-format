@@ -25,21 +25,21 @@ export const SERVICES: ServiceItem[] = [
   {
     id: 'flex',
     title: 'Flex Banners',
-    description: 'Bold, durable outdoor banners for shops and events.',
+    description: 'Bold banners for shop signs, churches, and events.',
     meta: 'Ready under 24 hrs',
     icon: Printer,
   },
   {
     id: 'sav',
     title: 'Self-Adhesive Vinyl (SAV)',
-    description: 'Clean adhesive prints for walls, glass and boards.',
+    description: 'Sharp stickers for walls, glass, and cars.',
     meta: 'Perfect for branding spaces',
     icon: Layers,
   },
   {
     id: 'stickers',
     title: 'Window & Clear Stickers',
-    description: 'Sharp branding that sits cleanly on glass.',
+    description: 'Clean branding that sits perfectly on glass.',
     meta: 'Professional finish, clear look',
     icon: Scan,
   },
@@ -49,19 +49,19 @@ export const TIMELINE_STEPS: TimelineStep[] = [
   {
     id: 1,
     title: 'Send details',
-    description: 'Tell us what you need on WhatsApp or via the form; size, material and quantity.',
+    description: 'Send us your design and size on WhatsApp or use the form.',
     icon: MessageSquare,
   },
   {
     id: 2,
-    title: 'Get quote & approve',
-    description: 'We send you pricing and a proof. You confirm before we print.',
+    title: 'Get price & approve',
+    description: 'We tell you the price instantly. You confirm before we print.',
     icon: FileCheck,
   },
   {
     id: 3,
     title: 'We print & deliver',
-    description: 'We produce and arrange pickup or Lagos delivery within 24-48 hours for standard jobs.',
+    description: 'We print and deliver to your doorstep (Lagos wide) within 24-48 hours.',
     icon: Truck,
   },
 ];

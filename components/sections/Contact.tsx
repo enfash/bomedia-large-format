@@ -118,10 +118,10 @@ const Contact: React.FC = () => {
           <div>
             <div className="mb-8">
               <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl mb-4">
-                Ready to print?
+                Start your order
               </h2>
               <p className="text-lg text-slate-600">
-                Send your job details and artwork and we’ll reply with a quote.
+                Send us your artwork and details. We will reply fast with a price.
               </p>
             </div>
 
@@ -129,9 +129,9 @@ const Contact: React.FC = () => {
               <div>
                 <Button href={WHATSAPP_LINK} target="_blank" size="lg" className="w-full sm:w-auto gap-2 !bg-green-600 hover:!bg-green-700">
                   <MessageCircle size={20} />
-                  WhatsApp BOMedia
+                  Chat on WhatsApp
                 </Button>
-                <p className="text-xs text-slate-500 mt-2 text-center sm:text-left">Available during business hours (9am–6pm, Mon–Sat)</p>
+                <p className="text-xs text-slate-500 mt-2 text-center sm:text-left">Available 9am–6pm, Mon–Sat</p>
               </div>
 
               <div className="pt-6 border-t border-slate-100 space-y-4">
@@ -164,7 +164,7 @@ const Contact: React.FC = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">Request Sent!</h3>
                 <p className="text-slate-600 mb-6">
-                  We have received your details and artwork. Our team will review everything and get back to you with a quote shortly.
+                  We have received your details. Our team will review and send you a price shortly.
                 </p>
                 <Button
                   onClick={() => setStatus('idle')}
@@ -353,7 +353,7 @@ const Contact: React.FC = () => {
                     Sending...
                   </div>
                 ) : (
-                  'Send Request'
+                  'Get Price'
                 )}
               </Button>
             </form>

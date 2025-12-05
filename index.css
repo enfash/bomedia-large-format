@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@config "./tailwind.config.js";
 
 /* Hide scrollbar for clean horizontal scroll if needed */
 .no-scrollbar::-webkit-scrollbar {

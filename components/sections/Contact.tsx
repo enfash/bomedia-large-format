@@ -53,29 +53,29 @@ const Contact: React.FC = () => {
     setErrorMessage('');
 
     try {
-      const formspreeData = new FormData();
+      const formDataToSend = new FormData();
 
       // Form fields
-      formspreeData.append('name', formData.name);
-      formspreeData.append('phone', formData.phone);
-      formspreeData.append('email', formData.email);
-      formspreeData.append('jobType', formData.jobType);
-      formspreeData.append('message', formData.message);
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('jobType', formData.jobType);
+      formDataToSend.append('message', formData.message);
+      formDataToSend.append('agreeToUpdates', agreeToTerms.toString());
 
-      // File attachment (up to 50MB supported)
+      // File attachment
       if (formData.file) {
-        formspreeData.append('file', formData.file);
+        formDataToSend.append('file', formData.file);
       }
 
-      const response = await fetch('https://formspree.io/f/mzznvaev', {
+      const response = await fetch('http://localhost:3001/api/contact', {
         method: 'POST',
-        body: formspreeData,
-        headers: {
-          'Accept': 'application/json'
-        }
+        body: formDataToSend,
       });
 
-      if (response.ok) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         setStatus('success');
         // Reset form
         setFormData({ name: '', phone: '', email: '', jobType: 'Flex Banner', message: '', file: null });
@@ -86,7 +86,7 @@ const Contact: React.FC = () => {
         // Reset after 5 seconds
         setTimeout(() => setStatus('idle'), 5000);
       } else {
-        throw new Error('Failed to send message');
+        throw new Error(result.error || 'Failed to send message');
       }
     } catch (error) {
       console.error('Submission error:', error);

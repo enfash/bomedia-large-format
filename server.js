@@ -62,7 +62,7 @@ app.use(express.urlencoded({ extended: true }));
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB max file size
+    fileSize: 25 * 1024 * 1024, // 25MB max file size
   },
 });
 
@@ -196,10 +196,20 @@ app.post('/api/contact', upload.single('file'), async (req, res) => {
         fileName = file.originalname;
         fileSize = file.size;
 
+        // Map job type to folder name
+        const jobTypeToFolder = {
+          'Flex Banner': 'flex',
+          'Self-Adhesive Vinyl (SAV)': 'sav',
+          'Window / Clear Sticker': 'windowgraphics',
+          'Other': 'others'
+        };
+
+        const categoryFolder = jobTypeToFolder[jobType] || 'others';
+
         const bucket = storage.bucket();
         const timestamp = Date.now();
         const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_');
-        const storagePath = `submissions/${timestamp}_${sanitizedFileName}`;
+        const storagePath = `submissions/${categoryFolder}/${timestamp}_${sanitizedFileName}`;
 
         const fileUpload = bucket.file(storagePath);
         await fileUpload.save(file.buffer, {
@@ -209,7 +219,7 @@ app.post('/api/contact', upload.single('file'), async (req, res) => {
         await fileUpload.makePublic();
         fileUrl = `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
 
-        console.log('✅ File uploaded to Storage');
+        console.log(`✅ File uploaded to Storage: ${categoryFolder}/${sanitizedFileName}`);
       } catch (uploadError) {
         console.error('⚠️ File upload failed:', uploadError.message);
       }

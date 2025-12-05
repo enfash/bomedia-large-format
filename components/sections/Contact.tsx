@@ -29,7 +29,20 @@ const Contact: React.FC = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFormData(prev => ({ ...prev, file: e.target.files![0] }));
+      const selectedFile = e.target.files[0];
+      const maxSize = 25 * 1024 * 1024; // 25MB in bytes
+
+      if (selectedFile.size > maxSize) {
+        // File is too large
+        setStatus('error');
+        setErrorMessage(`File is too large (${(selectedFile.size / 1024 / 1024).toFixed(1)}MB). Maximum size is 25MB. Please use WhatsApp to send larger files.`);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''; // Clear the input
+        }
+        return;
+      }
+
+      setFormData(prev => ({ ...prev, file: selectedFile }));
     }
   };
 

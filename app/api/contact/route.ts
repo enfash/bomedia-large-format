@@ -69,9 +69,13 @@ export async function POST(request: NextRequest) {
             }
         }
 
+        // Generate a short unique reference ID
+        const refId = Math.random().toString(36).substring(2, 7).toUpperCase();
+
         // Save to Firestore
         try {
             const submissionData = {
+                refId, // Save refId
                 name,
                 phone,
                 email,
@@ -86,7 +90,7 @@ export async function POST(request: NextRequest) {
             };
 
             const docRef = await adminDb.collection('submissions').add(submissionData);
-            console.log('✅ Submission saved to Firestore:', docRef.id);
+            console.log(`✅ Submission saved to Firestore: ${docRef.id} [${refId}]`);
         } catch (dbError: any) {
             console.error('Firestore error:', dbError);
             return NextResponse.json(
@@ -120,7 +124,7 @@ export async function POST(request: NextRequest) {
             await resend.emails.send({
                 from: RESEND_FROM,
                 to: RESEND_TO,
-                subject: `New Order: ${jobType} - ${name}`,
+                subject: `[#${refId}] New Order: ${jobType} - ${name}`,
                 html: adminEmailHTML,
                 attachments,
             });
@@ -134,7 +138,7 @@ export async function POST(request: NextRequest) {
                 await resend.emails.send({
                     from: RESEND_FROM,
                     to: email,
-                    subject: 'We received your order - BOMedia',
+                    subject: `Order Received [#${refId}] - BOMedia`,
                     html: customerEmailHTML,
                 });
 

@@ -1,25 +1,25 @@
 interface EmailTemplateProps {
-    name: string;
-    phone: string;
-    email?: string;
-    jobType: string;
-    message: string;
-    fileName?: string;
-    fileSize?: number;
-    agreeToUpdates: boolean;
+  name: string;
+  phone: string;
+  email?: string;
+  jobType: string;
+  message: string;
+  fileName?: string;
+  fileSize?: number;
+  agreeToUpdates: boolean;
 }
 
 export function generateAdminEmailHTML({
-    name,
-    phone,
-    email,
-    jobType,
-    message,
-    fileName,
-    fileSize,
-    agreeToUpdates,
+  name,
+  phone,
+  email,
+  jobType,
+  message,
+  fileName,
+  fileSize,
+  agreeToUpdates,
 }: EmailTemplateProps): string {
-    return `
+  return `
 <!DOCTYPE html>
 <html>
 <head>
@@ -60,6 +60,9 @@ export function generateAdminEmailHTML({
                 <p style="margin:0; font-size:11px; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">PHONE</p>
                 <p style="margin:6px 0 0; font-size:15px; color:#111827;">
                   ${phone}
+                  <a href="https://wa.me/${phone.replace(/\D/g, '').replace(/^0/, '234')}" style="display:inline-block; margin-left:8px; color:#16a34a; text-decoration:none; font-weight:600; font-size:13px; background:#dcfce7; padding:2px 8px; border-radius:12px;">
+                    Start Chat ↗
+                  </a>
                 </p>
               </div>
 
@@ -124,7 +127,7 @@ export function generateAdminEmailHTML({
 }
 
 export function generateCustomerEmailHTML(name: string, jobType: string): string {
-    return `
+  return `
 <!DOCTYPE html>
 <html>
 <head>

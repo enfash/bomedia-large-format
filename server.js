@@ -95,7 +95,12 @@ function generateAdminEmailHTML({ name, phone, email, jobType, message, fileName
               </div>
               <div style="margin-bottom:20px;">
                 <p style="margin:0; font-size:11px; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">PHONE</p>
-                <p style="margin:6px 0 0; font-size:15px; color:#111827;">${phone}</p>
+                <p style="margin:6px 0 0; font-size:15px; color:#111827;">
+                  ${phone}
+                  <a href="https://wa.me/${phone.replace(/\D/g, '').replace(/^0/, '234')}" style="display:inline-block; margin-left:8px; color:#16a34a; text-decoration:none; font-weight:600; font-size:13px; background:#dcfce7; padding:2px 8px; border-radius:12px;">
+                    Start Chat ↗
+                  </a>
+                </p>
               </div>
               ${email ? `
               <div style="margin-bottom:20px;">
@@ -176,7 +181,10 @@ app.post('/api/contact', upload.single('file'), async (req, res) => {
     const { name, phone, email, jobType, message, agreeToUpdates } = req.body;
     const file = req.file;
 
-    console.log('📨 New submission:', { name, phone, email, jobType, hasFile: !!file });
+    // Generate a short unique reference ID (e.g., 5 chars)
+    const refId = Math.random().toString(36).substring(2, 7).toUpperCase();
+
+    console.log(`📨 New submission [${refId}]:`, { name, phone, email, jobType, hasFile: !!file });
 
     // Validate required fields
     if (!name || !phone || !jobType || !message) {
@@ -229,6 +237,7 @@ app.post('/api/contact', upload.single('file'), async (req, res) => {
     if (db) {
       try {
         await db.collection('submissions').add({
+          refId, // Save the reference ID
           name,
           phone,
           email: email || '',
@@ -261,7 +270,7 @@ app.post('/api/contact', upload.single('file'), async (req, res) => {
         await resend.emails.send({
           from: RESEND_FROM,
           to: RESEND_TO,
-          subject: `New Order: ${jobType} - ${name}`,
+          subject: `[#${refId}] New Order: ${jobType} - ${name}`,
           html: adminEmailHTML,
           attachments,
         });
@@ -273,7 +282,7 @@ app.post('/api/contact', upload.single('file'), async (req, res) => {
           await resend.emails.send({
             from: RESEND_FROM,
             to: email,
-            subject: 'We received your order - BOMedia',
+            subject: `Order Received [#${refId}] - BOMedia`,
             html: customerEmailHTML,
           });
           console.log('✅ Customer confirmation sent');

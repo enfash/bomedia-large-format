@@ -344,7 +344,7 @@ const Contact: React.FC = () => {
               <Button
                 type="submit"
                 variant="primary"
-                className="w-full shadow-lg hover:shadow-xl translate-y-0 hover:-translate-y-0.5"
+                className="w-full shadow-lg hover:shadow-xl translate-y-0 hover:-translate-y-0.5 bg-blue-600 text-white hover:bg-blue-700"
                 disabled={status === 'sending'}
               >
                 {status === 'sending' ? (

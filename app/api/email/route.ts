@@ -5,7 +5,7 @@ import { Buffer } from 'buffer';
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-    
+
     const name = formData.get('name') as string;
     const phone = formData.get('phone') as string;
     const email = formData.get('email') as string;
@@ -57,12 +57,15 @@ Agreed to Updates: ${agreeToUpdates ? 'Yes' : 'No'}
       });
     }
 
+    // Generate a short unique reference ID
+    const refId = Math.random().toString(36).substring(2, 7).toUpperCase();
+
     // Send Mail
     await transporter.sendMail({
       from: `"BOMedia Web" <${process.env.SMTP_USER}>`,
       to: process.env.MAIL_TO,
       replyTo: email || undefined,
-      subject: `New Quote Request: ${jobType} - ${name}`,
+      subject: `[#${refId}] New Quote Request: ${jobType} - ${name}`,
       text: textMessage,
       html: htmlMessage,
       attachments: attachments,

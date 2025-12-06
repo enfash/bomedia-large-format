@@ -3,7 +3,7 @@ import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { initializeApp, cert } from 'firebase-admin/app';
+import { initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import { Resend } from 'resend';
@@ -19,24 +19,15 @@ const app = express();
 // Initialize Firebase Admin
 let adminApp;
 try {
-    // Check if already initialized to avoid hot-reload errors
+    // In Cloud Functions, initializeApp() automatically uses the default service account credentials
+    // No need for manual cert() or private keys!
     adminApp = initializeApp({
-        credential: cert({
-            projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-            clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-            privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-        }),
         storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
     });
-    console.log('✅ Firebase Admin initialized');
+    console.log('✅ Firebase Admin initialized (ADC)');
 } catch (error) {
-    // If already initialized, use existing
-    if (error.code === 'app/duplicate-app') {
-        // adminApp = getApp(); // Import getApp if needed, but usually we just proceed
-        console.log('Using existing Firebase Admin app');
-    } else {
-        console.warn('⚠️ Firebase Admin initialization warning:', error.message);
-    }
+    // If already initialized
+    console.log('Using existing Firebase Admin app');
 }
 
 // Get services (singleton style pattern for functions)
